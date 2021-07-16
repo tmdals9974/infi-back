@@ -1,0 +1,23 @@
+{
+  "name": "infi-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pm2": "pm2 start pm2.config.js",
+    "nodemon": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "date-utils": "^1.2.21",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
