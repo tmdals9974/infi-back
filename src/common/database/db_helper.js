@@ -3,7 +3,7 @@ const { Exception } = require('../../models/Exception');
 
 const select = async(selectQuery) => {
     if (typeof selectQuery != 'string')
-        return '해당 함수의 매개변수는 string 타입이어야 합니다.'
+        throw '해당 함수의 매개변수는 string 타입이어야 합니다.'
 
     try {
         const connection = await getConnection();

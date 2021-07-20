@@ -8,9 +8,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get('/getResturants', async (req, res) => {
-    const rows = await select("SELECT * FROM restaurant");    
-    res.json(ResponseSwitch(rows));
+app.get('/getRestaurants', async (req, res) => {
+    const restaurants = await select("SELECT * FROM restaurant");
+    const reviews = await select("SELECT * FROM review");
+
+    reviews.forEach((review) => {
+        const index = restaurants.findIndex(r => r.id === review.restaurant_id);
+        if (index !== -1) {
+            if (!restaurants[index].reviews) restaurants[index].reviews = [];
+            restaurants[index].reviews.push(review);
+        }
+    });
+
+    res.json(ResponseSwitch(restaurants));
 });
 
 app.listen(5000, () => {
