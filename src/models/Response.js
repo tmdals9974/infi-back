@@ -17,7 +17,7 @@ const ResponseSuccess = function () {
 
 const ResponseSwitch = function (val) {
     if (val instanceof Exception) {
-        return [ResponseError(val)];
+        return [ResponseError(val.message)];
     }
     else {
         return [ResponseSuccess(), val];
