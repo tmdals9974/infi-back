@@ -1,38 +1,85 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const cors = require('cors');
 const { select, insert } = require('./src/common/database/db_helper');
 const { ResponseSwitch } = require('./src/models/Response');
-const { Exception } = require("./src/models/Exception");
+const { Exception } = require('./src/models/Exception');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get('/getRestaurants', async (req, res) => {
-    const restaurants = await select("SELECT * FROM restaurant");
-    const reviews = await select("SELECT * FROM review");
+	const restaurants = await select('SELECT * FROM restaurant');
+	const reviews = await select('SELECT * FROM review');
 
-    reviews.forEach((review) => {
-        const index = restaurants.findIndex(r => r.id === review.restaurant_id);
-        if (index !== -1) {
-            if (!restaurants[index].reviews) restaurants[index].reviews = [];
-            restaurants[index].reviews.push(review);
-        }
-    });
+	reviews.forEach(review => {
+		const index = restaurants.findIndex(r => r.id === review.restaurant_id);
+		if (index !== -1) {
+			if (!restaurants[index].reviews) restaurants[index].reviews = [];
+			restaurants[index].reviews.push(review);
+		}
+	});
 
-    res.json(ResponseSwitch(restaurants));
+	restaurants.forEach(restaurant => {
+		let averaged = 0;
+		let count = 0;
+
+		if (restaurant.reviews)
+			restaurant.reviews.forEach(review => {
+				averaged += review.rating;
+				count++;
+			});
+        else restaurant.reviews = [];
+
+		restaurant.ratingAverage =
+			count === 0 ? 0 : +(Math.round(averaged / count + 'e+2') + 'e-2');
+	});
+
+	res.json(ResponseSwitch(restaurants));
 });
 
 app.post('/createRestaurant', async (req, res) => {
-    const valueArr = [req.body.type, req.body.position, req.body.name];
-    if (!valueArr.every(val => val)) res.json(ResponseSwitch(new Exception('매개 변수를 확인해주세요.', 'app.js/createRestaurant')));
-    
-    const restaurant = await insert("INSERT INTO restaurant(type, position, name) VALUES (?, ?, ?)", valueArr);
-    
-    res.json(ResponseSwitch(restaurant));
-})
+	const valueArr = [req.body.type, req.body.position, req.body.name];
+	if (!valueArr.every(val => val))
+		res.json(
+			ResponseSwitch(
+				new Exception('매개 변수를 확인해주세요.', 'app.js/createRestaurant')
+			)
+		);
+
+	const restaurant = await insert(
+		'INSERT INTO restaurant(type, position, name) VALUES (?, ?, ?)',
+		valueArr
+	);
+
+	res.json(ResponseSwitch(restaurant));
+});
+
+app.post('/createReview', async (req, res) => {
+	const valueArr = [
+		req.body.writer,
+		req.body.restaurants_id,
+		req.body.reviews,
+		req.body.rating,
+		req.body.menu,
+		req.body.price
+	];
+	if (!valueArr.every(val => val))
+		res.json(
+			ResponseSwitch(
+				new Exception('매개 변수를 확인해주세요.', 'app.js/createReview')
+			)
+		);
+
+	const restaurant = await insert(
+		'INSERT INTO review(writer, restaurant_id, reviews, rating, menu, price) VALUES (?, ?, ?, ?, ?, ?)',
+		valueArr
+	);
+
+	res.json(ResponseSwitch(restaurant));
+});
 
 app.listen(5000, () => {
-    console.log('express started');
+	console.log('express started');
 });
