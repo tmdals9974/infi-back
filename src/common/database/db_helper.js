@@ -16,4 +16,19 @@ const select = async(selectQuery) => {
     }
 }
 
-module.exports = { select }
+const insert = async(insertQuery, valueArr) => {
+    if (typeof insertQuery != 'string')
+        throw '해당 함수의 매개변수는 string 타입이어야 합니다.'
+
+    try {
+        const connection = await getConnection();
+        const [rows] = await connection.query(insertQuery, valueArr);
+        connection.release();
+        return rows;
+    }
+    catch (e) {
+        return new Exception(e, 'db_helper/insert');
+    }
+}
+
+module.exports = { select, insert }
