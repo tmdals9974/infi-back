@@ -6,6 +6,11 @@ const { Exception } = require('../../models/Exception');
 
 const path = "src/api/routes/user.js";
 
+router.get('/', async (req, res) => {
+	const users = await select('SELECT * FROM user');
+	return res.json(ResponseSwitch(users));
+});
+
 router.post('/', async (req, res) => {
 	const valueArr = [req.body.name, req.body.back_color, req.body.font_color];
 	if (!valueArr.every(val => val))

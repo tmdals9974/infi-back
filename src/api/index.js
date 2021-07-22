@@ -8,7 +8,7 @@ const user = require('./routes/user');
 require('date-utils');
 
 router.use(function (req, res, next) {
-    console.info(`[${new Date().toFormat('YYYY-MM-DD HH24:MI:SS')}] ${req.path}`);
+    console.info(`[${new Date().toFormat('YYYY-MM-DD HH24:MI:SS')}] ${req.method} ${req.path}`);
     next();
 });
 
