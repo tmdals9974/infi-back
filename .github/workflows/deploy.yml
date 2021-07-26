@@ -26,6 +26,7 @@ jobs:
           command_timeout: 10m
           script_stop: true
           script: |
+            cd ./infi-back
             git pull
             npm install
             npm run pm2
