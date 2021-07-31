@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { select, insert, update } = require('../../common/database/db_helper');
+const { select, insert, update, deleteQuery } = require('../../common/database/db_helper');
 const { ResponseSwitch } = require('../../models/Response');
-const { Exception } = require('../..//models/Exception');
+const { Exception } = require('../../models/Exception');
 
 const _path = "src/api/routes/restaurant.js";
 
@@ -66,6 +66,21 @@ router.put('/', async (req, res) => {
 		'UPDATE restaurant SET type = ?, position = ?, name = ? where id = ?',
 		valueArr
 	);
+
+	res.json(ResponseSwitch(restaurant));
+})
+
+router.delete('/', async (req, res) => {
+	const valueArr = [req.body.id];
+	if (!valueArr.every(val => val))
+		return res.json(
+			ResponseSwitch(
+				new Exception('매개 변수를 확인해주세요.', _path + '/')
+			)
+		);
+
+	await deleteQuery('DELETE FROM review WHERE restaurant_id = ?', valueArr);
+	const restaurant = await deleteQuery('DELETE FROM restaurant WHERE id = ?', valueArr);
 
 	res.json(ResponseSwitch(restaurant));
 })
