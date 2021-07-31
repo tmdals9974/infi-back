@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { select, insert } = require('../../common/database/db_helper');
+const { select, insert, update } = require('../../common/database/db_helper');
 const { ResponseSwitch } = require('../../models/Response');
 const { Exception } = require('../..//models/Exception');
 
-const path = "src/api/routes/restaurant.js";
+const _path = "src/api/routes/restaurant.js";
 
 router.get('/', async (req, res) => {
 	const restaurants = await select('SELECT * FROM restaurant');
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 	if (!valueArr.every(val => val))
 		return res.json(
 			ResponseSwitch(
-				new Exception('매개 변수를 확인해주세요.', path + '/')
+				new Exception('매개 변수를 확인해주세요.', _path + '/')
 			)
 		);
 
@@ -53,5 +53,21 @@ router.post('/', async (req, res) => {
 	res.json(ResponseSwitch(restaurant));
 });
 
+router.put('/', async (req, res) => {
+	const valueArr = [req.body.type, req.body.position, req.body.name, req.body.id];
+	if (!valueArr.every(val => val))
+		return res.json(
+			ResponseSwitch(
+				new Exception('매개 변수를 확인해주세요.', _path + '/')
+			)
+		);
+	
+	const restaurant = await update(
+		'UPDATE restaurant SET type = ?, position = ?, name = ? where id = ?',
+		valueArr
+	);
+
+	res.json(ResponseSwitch(restaurant));
+})
 
 module.exports = router;

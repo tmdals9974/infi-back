@@ -1,6 +1,8 @@
 const { getConnection } = require('./db_connection');
 const { Exception } = require('../../models/Exception');
 
+const _fileName = "db_helper";
+
 const select = async(selectQuery) => {
     if (typeof selectQuery != 'string')
         throw '해당 함수의 매개변수는 string 타입이어야 합니다.'
@@ -12,7 +14,7 @@ const select = async(selectQuery) => {
         return rows;
     }
     catch (e) {
-        return new Exception(e, 'db_helper/select');
+        return new Exception(e, `${_fileName}/select`);
     }
 }
 
@@ -27,7 +29,27 @@ const insert = async(insertQuery, valueArr) => {
         return rows;
     }
     catch (e) {
-        return new Exception(e, 'db_helper/insert');
+        return new Exception(e, `${_fileName}/insert`);
+    }
+}
+
+const update = async(updateQuery, valueArr) => {
+    if (typeof updateQuery != 'string')
+        throw '해당 함수의 매개변수는 string 타입이어야 합니다.'
+
+    try {
+        console.log(updateQuery);
+        console.log(JSON.stringify(valueArr));
+
+        const connection = await getConnection();
+        const [rows] = await connection.query(updateQuery, valueArr);
+        connection.release();
+
+        console.log(JSON.stringify(rows));
+        return rows;
+    }
+    catch (e) {
+        return new Exception(e, `${_fileName}/update`);
     }
 }
 
@@ -42,8 +64,8 @@ const deleteQuery = async(deleteQuery, valueArr) => {
         return rows;
     }
     catch (e) {
-        return new Exception(e, 'db_helper/delete');
+        return new Exception(e, `${_fileName}/delete`);
     }
 }
 
-module.exports = { select, insert, deleteQuery }
+module.exports = { select, insert, update, deleteQuery }
