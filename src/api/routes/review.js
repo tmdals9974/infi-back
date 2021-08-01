@@ -9,7 +9,7 @@ const path = "src/api/routes/review.js";
 router.post('/', async (req, res) => {
 	const valueArr = [
 		req.body.writer,
-		req.body.restaurants_id,
+		req.body.restaurant_id,
 		req.body.reviews,
 		req.body.rating,
 		req.body.menu,
