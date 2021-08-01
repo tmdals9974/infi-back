@@ -38,14 +38,9 @@ const update = async(updateQuery, valueArr) => {
         throw '해당 함수의 매개변수는 string 타입이어야 합니다.'
 
     try {
-        console.log(updateQuery);
-        console.log(JSON.stringify(valueArr));
-
         const connection = await getConnection();
         const [rows] = await connection.query(updateQuery, valueArr);
         connection.release();
-
-        console.log(JSON.stringify(rows));
         return rows;
     }
     catch (e) {
