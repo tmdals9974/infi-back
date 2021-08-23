@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-	const valueArr = [req.body.type, req.body.position, req.body.name];
+	const valueArr = [req.body.type, req.body.position, req.body.name, req.body.map];
 	if (!valueArr.every(val => val))
 		return res.json(
 			ResponseSwitch(
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 		);
 
 	const restaurant = await insert(
-		'INSERT INTO restaurant(type, position, name) VALUES (?, ?, ?)',
+		'INSERT INTO restaurant(type, position, name, map) VALUES (?, ?, ?, ?)',
 		valueArr
 	);
 
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-	const valueArr = [req.body.type, req.body.position, req.body.name, req.body.id];
+	const valueArr = [req.body.type, req.body.position, req.body.name, req.body.map, req.body.id];
 	if (!valueArr.every(val => val))
 		return res.json(
 			ResponseSwitch(
@@ -63,7 +63,7 @@ router.put('/', async (req, res) => {
 		);
 	
 	const restaurant = await update(
-		'UPDATE restaurant SET type = ?, position = ?, name = ? where id = ?',
+		'UPDATE restaurant SET type = ?, position = ?, name = ?, map = ? where id = ?',
 		valueArr
 	);
 
